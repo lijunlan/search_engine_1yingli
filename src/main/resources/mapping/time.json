@@ -1,0 +1,6 @@
+{
+  "type": "date",
+  "format": "yyyy,M",
+  "ignore_malformed": true,
+  "index": "no"
+}
