@@ -12,6 +12,7 @@ import com.junlanli.search.onemile.model.esmodel.TeacherES;
 import com.junlanli.search.onemile.model.esmodel.WorkExperienceES;
 import com.junlanli.search.onemile.model.selectmodel.TeacherAll;
 import com.junlanli.search.onemile.service.TeacherService;
+import net.sourceforge.pinyin4j.multipinyin.MultiPinyinConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.elasticsearch.ElasticsearchException;
 import org.springframework.stereotype.Service;
@@ -54,10 +55,13 @@ public class TeacherServiceImpl implements TeacherService {
 
     @Override
     public JSONObject list(int page, int size) {
+//        MultiPinyinConfig.multiPinyinPath = "";
         List<TeacherAll> teachers = teacherMapper.selectAll(page * size, size);
         List<TeacherES> teacherESList = new ArrayList<>(teachers.size());
         for (TeacherAll teacher : teachers) {
             TeacherES teacherES = new TeacherES();
+            String name = teacher.getName();
+            //TODO pinyin
             teacherES.setTeacherId(teacher.getTeacherId());
             teacherES.setName(teacher.getName());
             teacherES.setEmail(teacher.getEmail());

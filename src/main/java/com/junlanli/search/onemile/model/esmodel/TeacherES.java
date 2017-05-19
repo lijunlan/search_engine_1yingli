@@ -24,6 +24,12 @@ public class TeacherES {
     @Field(type = FieldType.String, index = FieldIndex.not_analyzed)
     private String name;
 
+    @Field(type = FieldType.String, index = FieldIndex.not_analyzed)
+    private String nameQuanpin;
+
+    @Field(type = FieldType.String, index = FieldIndex.not_analyzed)
+    private String nameJianpin;
+
     @Field(type = FieldType.String, index = FieldIndex.no)
     private String email;
 
@@ -47,6 +53,22 @@ public class TeacherES {
 
     @Field(type = FieldType.Nested)
     private List<WorkExperienceES> workExperiences;
+
+    public String getNameQuanpin() {
+        return nameQuanpin;
+    }
+
+    public void setNameQuanpin(String nameQuanpin) {
+        this.nameQuanpin = nameQuanpin;
+    }
+
+    public String getNameJianpin() {
+        return nameJianpin;
+    }
+
+    public void setNameJianpin(String nameJianpin) {
+        this.nameJianpin = nameJianpin;
+    }
 
     public Long getTeacherId() {
         return teacherId;

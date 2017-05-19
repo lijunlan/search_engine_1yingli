@@ -30,6 +30,7 @@ public interface TeacherCustomMapper extends TeacherMapper {
             "REWARDNUMBER, ORDERALLNUMBER, ACCEPTORDERNUMBER, MASKNUMBER, MASKFINISHNUMBER, ",
             "ONCHAT, SUBMILE, SHOWNOTIFY, INTRODUCE",
             "from teacher",
+            "where ONSERVICE=1",
             "limit #{skip,jdbcType=INTEGER},#{size,jdbcType=INTEGER}"
     })
     @Results(id = "teacherall_whole",
