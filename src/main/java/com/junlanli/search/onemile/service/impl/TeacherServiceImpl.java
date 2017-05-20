@@ -3,6 +3,8 @@ package com.junlanli.search.onemile.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.junlanli.search.onemile.util.FastJsonUtil;
+import com.junlanli.search.onemile.util.NamePinyinUtil;
 import com.junlanli.search.onemile.dao.TeacherESDao;
 import com.junlanli.search.onemile.mapper.custom.TeacherCustomMapper;
 import com.junlanli.search.onemile.model.Studyexperience;
@@ -12,7 +14,7 @@ import com.junlanli.search.onemile.model.esmodel.TeacherES;
 import com.junlanli.search.onemile.model.esmodel.WorkExperienceES;
 import com.junlanli.search.onemile.model.selectmodel.TeacherAll;
 import com.junlanli.search.onemile.service.TeacherService;
-import net.sourceforge.pinyin4j.multipinyin.MultiPinyinConfig;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.elasticsearch.ElasticsearchException;
 import org.springframework.stereotype.Service;
@@ -31,6 +33,8 @@ import java.util.Map;
 @Service
 public class TeacherServiceImpl implements TeacherService {
 
+    private static final Logger logger = Logger.getLogger(TeacherServiceImpl.class);
+
     private final TeacherCustomMapper teacherMapper;
 
     private final TeacherESDao teacherESDao;
@@ -46,22 +50,24 @@ public class TeacherServiceImpl implements TeacherService {
     public JSONObject createIndex() {
         Boolean r = teacherESDao.createIndex();
         if (r) {
-            System.out.println("create index of [" + TeacherES.class + "] successfully");
+            logger.info("create index of [" + TeacherES.class + "] successfully");
         } else {
-            System.out.println("create index of [" + TeacherES.class + "] failed");
+            logger.info("create index of [" + TeacherES.class + "] failed");
         }
-        return null;
+        return FastJsonUtil.success();
     }
 
     @Override
-    public JSONObject list(int page, int size) {
-//        MultiPinyinConfig.multiPinyinPath = "";
+    public JSONObject refreshAll(int page, int size) {
         List<TeacherAll> teachers = teacherMapper.selectAll(page * size, size);
         List<TeacherES> teacherESList = new ArrayList<>(teachers.size());
         for (TeacherAll teacher : teachers) {
             TeacherES teacherES = new TeacherES();
             String name = teacher.getName();
-            //TODO pinyin
+            String pinyin = NamePinyinUtil.transferName(name);
+            String jianpin = NamePinyinUtil.transferSimpleName(name);
+            teacherES.setNameQuanpin(pinyin);
+            teacherES.setNameJianpin(jianpin);
             teacherES.setTeacherId(teacher.getTeacherId());
             teacherES.setName(teacher.getName());
             teacherES.setEmail(teacher.getEmail());

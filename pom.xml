@@ -84,7 +84,7 @@
 
         <!-- for pin yin-->
         <dependency>
-            <groupId>cn.focus</groupId>
+            <groupId>com.junlanli</groupId>
             <artifactId>pinyin4j</artifactId>
             <version>2.5.1-SNAPSHOT</version>
         </dependency>

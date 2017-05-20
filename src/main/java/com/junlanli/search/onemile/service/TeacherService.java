@@ -11,7 +11,7 @@ import com.alibaba.fastjson.JSONObject;
  */
 public interface TeacherService {
 
-    JSONObject list(int page, int size);
+    JSONObject refreshAll(int page, int size);
 
     JSONObject createIndex();
 }

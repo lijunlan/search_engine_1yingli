@@ -21,7 +21,7 @@ public class Test {
 
     @org.junit.Test
     public void test() {
-        teacherService.list(0, 100);
+        teacherService.refreshAll(0, 100);
     }
 
     @org.junit.Test
