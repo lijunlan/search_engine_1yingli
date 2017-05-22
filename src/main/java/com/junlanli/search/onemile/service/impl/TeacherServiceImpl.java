@@ -3,6 +3,7 @@ package com.junlanli.search.onemile.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.junlanli.search.onemile.common.constant.Code;
 import com.junlanli.search.onemile.util.FastJsonUtil;
 import com.junlanli.search.onemile.util.NamePinyinUtil;
 import com.junlanli.search.onemile.dao.TeacherESDao;
@@ -48,60 +49,87 @@ public class TeacherServiceImpl implements TeacherService {
 
     @Override
     public JSONObject createIndex() {
-        Boolean r = teacherESDao.createIndex();
-        if (r) {
-            logger.info("create index of [" + TeacherES.class + "] successfully");
-        } else {
-            logger.info("create index of [" + TeacherES.class + "] failed");
+        try {
+            Boolean r = teacherESDao.createIndex();
+            if (r) {
+                logger.info("create index of [" + TeacherES.class + "] successfully");
+            } else {
+                logger.info("create index of [" + TeacherES.class + "] failed");
+            }
+            return FastJsonUtil.success();
+        } catch (Exception e) {
+            logger.error("create index failed", e);
+            return FastJsonUtil.error(Code.INTERNAL_ERROR, "internal error");
         }
-        return FastJsonUtil.success();
+    }
+
+    @Override
+    public JSONObject refreshOne(long teacherId) {
+        try {
+            TeacherAll teacherAll = teacherMapper.selectOne(teacherId);
+            TeacherES teacherES = transfer(teacherAll);
+            String r = teacherESDao.index(teacherES);
+            return FastJsonUtil.success(r);
+        } catch (Exception e) {
+            logger.error("refresh an index failed", e);
+            return FastJsonUtil.error(Code.INTERNAL_ERROR, "internal error");
+        }
     }
 
     @Override
     public JSONObject refreshAll(int page, int size) {
-        List<TeacherAll> teachers = teacherMapper.selectAll(page * size, size);
-        List<TeacherES> teacherESList = new ArrayList<>(teachers.size());
-        for (TeacherAll teacher : teachers) {
-            TeacherES teacherES = new TeacherES();
-            String name = teacher.getName();
-            String pinyin = NamePinyinUtil.transferName(name);
-            String jianpin = NamePinyinUtil.transferSimpleName(name);
-            teacherES.setNameQuanpin(pinyin);
-            teacherES.setNameJianpin(jianpin);
-            teacherES.setTeacherId(teacher.getTeacherId());
-            teacherES.setName(teacher.getName());
-            teacherES.setEmail(teacher.getEmail());
-            teacherES.setPhone(teacher.getPhone());
-            teacherES.setSimpleInfo(teacher.getSimpleinfo());
-            teacherES.setTopic(teacher.getTopic());
-            teacherES.setIntroduce(teacher.getIntroduce());
-            if (teacher.getIconurl() != null) {
-                String url = teacher.getIconurl().replace("http://image.1yingli.cn/", "http://yiyinglipic.oss-cn-hangzhou.aliyuncs.com/");
-                url = url.replaceAll("@.*", "");
-                teacherES.setIconUrl(url);
-            }
-            List<Studyexperience> studyexperiences = teacher.getStudyexperiences();
-            List<StudyExperienceES> studyExperienceESList = new ArrayList<>(studyexperiences.size());
-            for (Studyexperience studyexperience : studyexperiences) {
-                StudyExperienceES studyExperienceES = JSON.toJavaObject((JSON) JSON.toJSON(studyexperience), StudyExperienceES.class);
-                studyExperienceESList.add(studyExperienceES);
-            }
-            List<Workexperience> workexperiences = teacher.getWorkexperiences();
-            List<WorkExperienceES> workExperienceESList = new ArrayList<>(workexperiences.size());
-            for (Workexperience workexperience : workexperiences) {
-                WorkExperienceES workExperienceES = JSON.toJavaObject((JSON) JSON.toJSON(workexperience), WorkExperienceES.class);
-                workExperienceESList.add(workExperienceES);
-            }
-            teacherES.setStudyExperiences(studyExperienceESList);
-            teacherES.setWorkExperiences(workExperienceESList);
-            teacherESList.add(teacherES);
-        }
         try {
+            List<TeacherAll> teachers = teacherMapper.selectAll(page * size, size);
+            List<TeacherES> teacherESList = new ArrayList<>(teachers.size());
+            for (TeacherAll teacher : teachers) {
+                teacherESList.add(transfer(teacher));
+            }
             teacherESDao.bulkIndex(teacherESList);
+            return FastJsonUtil.success();
         } catch (ElasticsearchException e) {
             Map<String, String> fl = e.getFailedDocuments();
-            System.out.println(JSON.toJSONString(fl, SerializerFeature.PrettyFormat));
+            String message = JSON.toJSONString(fl, SerializerFeature.PrettyFormat);
+            logger.error(message, e);
+            return FastJsonUtil.error(Code.INTERNAL_ERROR, message);
+        } catch (Exception e) {
+            logger.error("refresh all indices failed", e);
+            return FastJsonUtil.error(Code.INTERNAL_ERROR, "internal error");
         }
-        return null;
+    }
+
+    private TeacherES transfer(TeacherAll teacherAll) {
+        TeacherES teacherES = new TeacherES();
+        String name = teacherAll.getName();
+        String pinyin = NamePinyinUtil.transferName(name);
+        String jianpin = NamePinyinUtil.transferSimpleName(name);
+        teacherES.setNameQuanpin(pinyin);
+        teacherES.setNameJianpin(jianpin);
+        teacherES.setTeacherId(teacherAll.getTeacherId());
+        teacherES.setName(teacherAll.getName());
+        teacherES.setEmail(teacherAll.getEmail());
+        teacherES.setPhone(teacherAll.getPhone());
+        teacherES.setSimpleInfo(teacherAll.getSimpleinfo());
+        teacherES.setTopic(teacherAll.getTopic());
+        teacherES.setIntroduce(teacherAll.getIntroduce());
+        if (teacherAll.getIconurl() != null) {
+            String url = teacherAll.getIconurl().replace("http://image.1yingli.cn/", "http://yiyinglipic.oss-cn-hangzhou.aliyuncs.com/");
+            url = url.replaceAll("@.*", "");
+            teacherES.setIconUrl(url);
+        }
+        List<Studyexperience> studyexperiences = teacherAll.getStudyexperiences();
+        List<StudyExperienceES> studyExperienceESList = new ArrayList<>(studyexperiences.size());
+        for (Studyexperience studyexperience : studyexperiences) {
+            StudyExperienceES studyExperienceES = JSON.toJavaObject((JSON) JSON.toJSON(studyexperience), StudyExperienceES.class);
+            studyExperienceESList.add(studyExperienceES);
+        }
+        List<Workexperience> workexperiences = teacherAll.getWorkexperiences();
+        List<WorkExperienceES> workExperienceESList = new ArrayList<>(workexperiences.size());
+        for (Workexperience workexperience : workexperiences) {
+            WorkExperienceES workExperienceES = JSON.toJavaObject((JSON) JSON.toJSON(workexperience), WorkExperienceES.class);
+            workExperienceESList.add(workExperienceES);
+        }
+        teacherES.setStudyExperiences(studyExperienceESList);
+        teacherES.setWorkExperiences(workExperienceESList);
+        return teacherES;
     }
 }

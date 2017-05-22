@@ -14,4 +14,6 @@ public interface TeacherService {
     JSONObject refreshAll(int page, int size);
 
     JSONObject createIndex();
+
+    JSONObject refreshOne(long teacherId);
 }

@@ -11,14 +11,40 @@ import java.util.List;
  */
 public interface BaseESDao<E> {
 
+    /**
+     * get index name
+     *
+     * @return index name
+     */
     String getIndexName();
 
+    /**
+     * get type name
+     *
+     * @return type name
+     */
     String getType();
 
+    /**
+     * create | update index setting including mapping
+     *
+     * @return result of creation. {@code true} represent created successfully, {@code false} on the contrary
+     */
     Boolean createIndex();
 
+    /**
+     * update index
+     *
+     * @param entity new entity data
+     * @return response of request
+     */
     String index(E entity);
 
+    /**
+     * update all index in a batch
+     *
+     * @param list new entity list
+     */
     void bulkIndex(List<E> list);
 
 }

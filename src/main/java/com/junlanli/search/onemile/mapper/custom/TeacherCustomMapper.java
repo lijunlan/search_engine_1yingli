@@ -2,10 +2,7 @@ package com.junlanli.search.onemile.mapper.custom;
 
 import com.junlanli.search.onemile.mapper.TeacherMapper;
 import com.junlanli.search.onemile.model.selectmodel.TeacherAll;
-import org.apache.ibatis.annotations.Many;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.type.JdbcType;
 
 import java.util.List;
@@ -90,5 +87,21 @@ public interface TeacherCustomMapper extends TeacherMapper {
                             many = @Many(select = "com.junlanli.search.onemile.mapper.custom.WorkexperienceCustomMapper.selectByTeacherId"))
             })
     List<TeacherAll> selectAll(Integer skip, Integer size);
+
+    @Select({
+            "SELECT",
+            "TEACHER_ID, ADDRESS, ALIPAY, ANSWERRATIO, ANSWERTIME, BGURL, CHECKDEGREESTATE, ",
+            "CHECKEMAIL, CHECKIDCARDSTATE, CHECKPASSAGENUMBER, CHECKPHONE, CHECKWORKSTATE, ",
+            "COMMENTNUMBER, CREATETIME, EMAIL, FINISHORDERNUMBER, FIRSTIDENTITY, ICONURL, ",
+            "LEVEL, LIKENUMBER, LOOKNUMBER, MILE, NAME, ONSERVICE, ORDERNUMBER, PASSAGENUMBER, ",
+            "PAYPAL, PHONE, PRAISERATIO, PRICE, REFUSEPASSAGENUMBER, SCORE, SERVICEPRONUMBERFORTEACHER, ",
+            "SERVICEPRONUMBERFORUSER, SEX, SIMPLEINFO, TIPMARK, TOPIC, USERNAME, USER_ID, ",
+            "REWARDNUMBER, ORDERALLNUMBER, ACCEPTORDERNUMBER, MASKNUMBER, MASKFINISHNUMBER, ",
+            "ONCHAT, SUBMILE, SHOWNOTIFY, INTRODUCE",
+            "from teacher",
+            "where TEACHER_ID=#{teacherId,jdbcType=BIGINT} and ONSERVICE=1"
+    })
+    @ResultMap("teacherall_whole")
+    TeacherAll selectOne(Long teacherId);
 
 }
