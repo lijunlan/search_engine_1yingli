@@ -1,5 +1,9 @@
-package com.junlanli.search.onemile.dao;
+package com.junlanli.search.onemile.dao.repository.custom;
 
+import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
+import org.springframework.data.repository.NoRepositoryBean;
+
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -9,21 +13,8 @@ import java.util.List;
  *
  * @author: lijunlan888@gmail.com
  */
-public interface BaseESDao<E> {
-
-    /**
-     * get index name
-     *
-     * @return index name
-     */
-    String getIndexName();
-
-    /**
-     * get type name
-     *
-     * @return type name
-     */
-    String getType();
+@NoRepositoryBean
+public interface BaseESDao<E, ID extends Serializable> extends ElasticsearchRepository<E, ID> {
 
     /**
      * create | update index setting including mapping
@@ -38,7 +29,7 @@ public interface BaseESDao<E> {
      * @param entity new entity data
      * @return response of request
      */
-    String index(E entity);
+    String insertIndex(E entity);
 
     /**
      * update all index in a batch

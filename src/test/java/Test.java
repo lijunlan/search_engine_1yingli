@@ -1,5 +1,5 @@
 import com.junlanli.search.onemile.config.starter.Application;
-import com.junlanli.search.onemile.service.TeacherService;
+import com.junlanli.search.onemile.service.TeacherWriteService;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,15 +17,15 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class Test {
 
     @Autowired
-    private TeacherService teacherService;
+    private TeacherWriteService teacherWriteService;
 
     @org.junit.Test
     public void test() {
-        teacherService.refreshAll(0, 100);
+        teacherWriteService.refreshAll();
     }
 
     @org.junit.Test
     public void createIndex() {
-        teacherService.createIndex();
+        teacherWriteService.createIndex();
     }
 }

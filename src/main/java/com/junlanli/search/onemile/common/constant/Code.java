@@ -9,7 +9,9 @@ package com.junlanli.search.onemile.common.constant;
  */
 public enum Code {
     SUCCESS(200),
-    INTERNAL_ERROR(500);
+    INTERNAL_ERROR(500),
+    METHOD_WRONG(404),
+    PARAMETER_WRONG(402);
 
     private int number;
 

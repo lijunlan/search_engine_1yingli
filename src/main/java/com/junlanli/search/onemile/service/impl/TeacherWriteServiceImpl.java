@@ -4,9 +4,9 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.junlanli.search.onemile.common.constant.Code;
+import com.junlanli.search.onemile.dao.repository.TeacherESRepository;
 import com.junlanli.search.onemile.util.FastJsonUtil;
 import com.junlanli.search.onemile.util.NamePinyinUtil;
-import com.junlanli.search.onemile.dao.TeacherESDao;
 import com.junlanli.search.onemile.mapper.custom.TeacherCustomMapper;
 import com.junlanli.search.onemile.model.Studyexperience;
 import com.junlanli.search.onemile.model.Workexperience;
@@ -14,7 +14,7 @@ import com.junlanli.search.onemile.model.esmodel.StudyExperienceES;
 import com.junlanli.search.onemile.model.esmodel.TeacherES;
 import com.junlanli.search.onemile.model.esmodel.WorkExperienceES;
 import com.junlanli.search.onemile.model.selectmodel.TeacherAll;
-import com.junlanli.search.onemile.service.TeacherService;
+import com.junlanli.search.onemile.service.TeacherWriteService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.elasticsearch.ElasticsearchException;
@@ -32,25 +32,27 @@ import java.util.Map;
  * @author: lijunlan888@gmail.com
  */
 @Service
-public class TeacherServiceImpl implements TeacherService {
+public class TeacherWriteServiceImpl implements TeacherWriteService {
 
-    private static final Logger logger = Logger.getLogger(TeacherServiceImpl.class);
+    private static final Logger logger = Logger.getLogger(TeacherWriteServiceImpl.class);
 
     private final TeacherCustomMapper teacherMapper;
 
-    private final TeacherESDao teacherESDao;
+    private final TeacherESRepository teacherESRepository;
 
     @Autowired
-    public TeacherServiceImpl(TeacherCustomMapper teacherMapper,
-                              TeacherESDao teacherESDao) {
+    public TeacherWriteServiceImpl(TeacherCustomMapper teacherMapper,
+                                   TeacherESRepository teacherESRepository) {
         this.teacherMapper = teacherMapper;
-        this.teacherESDao = teacherESDao;
+        this.teacherESRepository = teacherESRepository;
     }
+
+    private static final int size = 100;
 
     @Override
     public JSONObject createIndex() {
         try {
-            Boolean r = teacherESDao.createIndex();
+            Boolean r = teacherESRepository.createIndex();
             if (r) {
                 logger.info("create index of [" + TeacherES.class + "] successfully");
             } else {
@@ -68,7 +70,7 @@ public class TeacherServiceImpl implements TeacherService {
         try {
             TeacherAll teacherAll = teacherMapper.selectOne(teacherId);
             TeacherES teacherES = transfer(teacherAll);
-            String r = teacherESDao.index(teacherES);
+            String r = teacherESRepository.insertIndex(teacherES);
             return FastJsonUtil.success(r);
         } catch (Exception e) {
             logger.error("refresh an index failed", e);
@@ -77,14 +79,19 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    public JSONObject refreshAll(int page, int size) {
+    public JSONObject refreshAll() {
         try {
-            List<TeacherAll> teachers = teacherMapper.selectAll(page * size, size);
-            List<TeacherES> teacherESList = new ArrayList<>(teachers.size());
-            for (TeacherAll teacher : teachers) {
-                teacherESList.add(transfer(teacher));
+            int page = 0;
+            while (true) {
+                List<TeacherAll> teachers = teacherMapper.selectAll(page * size, size);
+                if (teachers.size() == 0) break;
+                List<TeacherES> teacherESList = new ArrayList<>(teachers.size());
+                for (TeacherAll teacher : teachers) {
+                    teacherESList.add(transfer(teacher));
+                }
+                teacherESRepository.bulkIndex(teacherESList);
+                page++;
             }
-            teacherESDao.bulkIndex(teacherESList);
             return FastJsonUtil.success();
         } catch (ElasticsearchException e) {
             Map<String, String> fl = e.getFailedDocuments();

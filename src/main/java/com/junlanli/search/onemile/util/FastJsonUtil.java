@@ -18,14 +18,14 @@ public final class FastJsonUtil {
 
     public static JSONObject error(Code code, String msg) {
         JSONObject result = new JSONObject();
-        result.put("code", code);
+        result.put("code", code.getNumber());
         result.put("msg", msg);
         return result;
     }
 
     public static JSONObject error(Code code, String msg, Object data) {
         JSONObject result = new JSONObject();
-        result.put("code", code);
+        result.put("code", code.getNumber());
         result.put("data", data);
         result.put("msg", msg);
         return result;
@@ -34,7 +34,7 @@ public final class FastJsonUtil {
 
     public static JSONObject success(String msg, Object data) {
         JSONObject result = new JSONObject();
-        result.put("code", Code.SUCCESS);
+        result.put("code", Code.SUCCESS.getNumber());
         result.put("msg", msg);
         result.put("data", data);
         return result;
@@ -42,7 +42,7 @@ public final class FastJsonUtil {
 
     public static JSONObject success(Object data) {
         JSONObject result = new JSONObject();
-        result.put("code", Code.SUCCESS);
+        result.put("code", Code.SUCCESS.getNumber());
         result.put("msg", "success");
         result.put("data", data);
         return result;
@@ -50,14 +50,14 @@ public final class FastJsonUtil {
 
     public static JSONObject success() {
         JSONObject result = new JSONObject();
-        result.put("code", Code.SUCCESS);
+        result.put("code", Code.SUCCESS.getNumber());
         result.put("msg", "success");
         return result;
     }
 
     public static JSONObject success(String msg) {
         JSONObject result = new JSONObject();
-        result.put("code", Code.SUCCESS);
+        result.put("code", Code.SUCCESS.getNumber());
         result.put("msg", msg);
         return result;
     }

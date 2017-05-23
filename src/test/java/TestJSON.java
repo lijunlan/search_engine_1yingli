@@ -15,7 +15,10 @@ public class TestJSON {
 
     @org.junit.Test
     public void test() {
-        JSONObject j = FastJsonUtil.success("test");
-        System.out.println(JSON.toJSONString(j, SerializerFeature.PrettyFormat));
+//        JSONObject j = FastJsonUtil.success("test");
+//        System.out.println(JSON.toJSONString(j, SerializerFeature.PrettyFormat));
+        long l = 91000000000L;
+        int a = (int) l;
+        System.out.println(a);
     }
 }

@@ -43,9 +43,11 @@ public class NamePinyinUtil {
     public static String transferSimpleName(String chinese) {
         try {
             String pinyin = PinyinHelper.toHanYuPinyinString(chinese, nameFormat, ",", false);
+            logger.info(String.format("whole word: %s, pinyin: %s", chinese, pinyin));
             StringBuilder sb = new StringBuilder();
             String[] pinyins = pinyin.split(",");
             for (String py : pinyins) {
+                if (py.length() == 0) continue;
                 sb.append(py.charAt(0));
             }
             return sb.toString();
