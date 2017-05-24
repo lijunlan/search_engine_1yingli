@@ -11,6 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
+import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.stereotype.Service;
 
 /**
@@ -37,7 +40,8 @@ public class HintReadServiceImpl implements HintReadService {
         try {
             Sort sort = new Sort(new Sort.Order(Sort.Direction.DESC, "score"));
             PageRequest pageRequest = new PageRequest(0, 8, sort);
-
+            NativeSearchQueryBuilder searchQueryBuilder = new NativeSearchQueryBuilder();
+//            searchQueryBuilder.withFields()
             Page<HintES> hintES = hintESRepository.hintByChineseOrPinyin(name, pageRequest);
             return FastJsonUtil.success(hintES.getContent());
         } catch (Exception e) {

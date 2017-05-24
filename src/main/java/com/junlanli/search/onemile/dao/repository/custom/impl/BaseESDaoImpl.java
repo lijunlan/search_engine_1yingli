@@ -1,9 +1,13 @@
 package com.junlanli.search.onemile.dao.repository.custom.impl;
 
 import com.junlanli.search.onemile.dao.repository.custom.BaseESDao;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.search.aggregations.Aggregations;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
+import org.springframework.data.elasticsearch.core.ResultsExtractor;
 import org.springframework.data.elasticsearch.core.query.IndexQuery;
 import org.springframework.data.elasticsearch.core.query.IndexQueryBuilder;
+import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.data.elasticsearch.repository.support.AbstractElasticsearchRepository;
 import org.springframework.data.elasticsearch.repository.support.ElasticsearchEntityInformation;
 
@@ -59,5 +63,16 @@ public class BaseESDaoImpl<E, ID extends Serializable> extends AbstractElasticse
             queryList.add(query);
         }
         elasticsearchOperations.bulkIndex(queryList);
+    }
+
+    @Override
+    public Aggregations aggregate(SearchQuery searchQuery) {
+        Aggregations aggregations = elasticsearchOperations.query(searchQuery, new ResultsExtractor<Aggregations>() {
+            @Override
+            public Aggregations extract(SearchResponse response) {
+                return response.getAggregations();
+            }
+        });
+        return aggregations;
     }
 }

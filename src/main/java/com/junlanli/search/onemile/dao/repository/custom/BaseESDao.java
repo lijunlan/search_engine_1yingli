@@ -1,5 +1,7 @@
 package com.junlanli.search.onemile.dao.repository.custom;
 
+import org.elasticsearch.search.aggregations.Aggregations;
+import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 import org.springframework.data.repository.NoRepositoryBean;
 
@@ -37,5 +39,13 @@ public interface BaseESDao<E, ID extends Serializable> extends ElasticsearchRepo
      * @param list new entity list
      */
     void bulkIndex(List<E> list);
+
+    /**
+     * aggregate the query
+     *
+     * @param searchQuery aggregation and query details
+     * @return aggregation
+     */
+    Aggregations aggregate(SearchQuery searchQuery);
 
 }
