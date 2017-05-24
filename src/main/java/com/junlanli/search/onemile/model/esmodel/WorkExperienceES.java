@@ -14,6 +14,12 @@ public class WorkExperienceES {
     @Field(type = FieldType.String, index = FieldIndex.not_analyzed)
     private String companyname;
 
+    @Field(type = FieldType.String, index = FieldIndex.not_analyzed)
+    private String companynameQuanpin;
+
+    @Field(type = FieldType.String, index = FieldIndex.not_analyzed)
+    private String companynameJianpin;
+
     @Mapping(mappingPath = "mapping/time.json")
 //    @Field(type = FieldType.Date, format = DateFormat.year_month, index = FieldIndex.no)
     private String endtime;
@@ -26,6 +32,22 @@ public class WorkExperienceES {
     private String starttime;
 
     private String description;
+
+    public String getCompanynameQuanpin() {
+        return companynameQuanpin;
+    }
+
+    public void setCompanynameQuanpin(String companynameQuanpin) {
+        this.companynameQuanpin = companynameQuanpin;
+    }
+
+    public String getCompanynameJianpin() {
+        return companynameJianpin;
+    }
+
+    public void setCompanynameJianpin(String companynameJianpin) {
+        this.companynameJianpin = companynameJianpin;
+    }
 
     public String getCompanyname() {
         return companyname;

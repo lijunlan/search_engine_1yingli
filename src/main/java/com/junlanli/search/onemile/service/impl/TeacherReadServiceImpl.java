@@ -37,7 +37,7 @@ public class TeacherReadServiceImpl implements TeacherReadService {
     public JSONObject searchByName(String name, int page, int pageSize) {
         try {
             PageRequest pageRequest = new PageRequest(page, pageSize);
-            Page<TeacherES> r = teacherESRepository.findByNameOrNamePinyin(name, pageRequest);
+            Page<TeacherES> r = teacherESRepository.findByNameOrNamePinyinOrSchoolNameOrCompanyName(name, pageRequest);
             JSONObject data = new JSONObject();
             data.put("total", r.getTotalElements());
             data.put("pageCount", r.getTotalPages());
@@ -49,15 +49,4 @@ public class TeacherReadServiceImpl implements TeacherReadService {
         }
     }
 
-    @Override
-    public JSONObject hintByName(String name) {
-        try {
-            PageRequest pageRequest = new PageRequest(0, 6);
-            Page<TeacherES> r = teacherESRepository.hintByNameOrNamePinyin(name, pageRequest);
-            return FastJsonUtil.success(ModelTransformUtil.transformList(r.getContent(), TeacherNameHint.class));
-        } catch (Exception e) {
-            logger.error("failed to hint by name", e);
-            return FastJsonUtil.error(Code.INTERNAL_ERROR, "internal error");
-        }
-    }
 }

@@ -24,11 +24,33 @@ public class StudyExperienceES {
     @Field(type = FieldType.String, index = FieldIndex.not_analyzed)
     private String schoolname;
 
+    @Field(type = FieldType.String, index = FieldIndex.not_analyzed)
+    private String schoolnameQuanpin;
+
+    @Field(type = FieldType.String, index = FieldIndex.not_analyzed)
+    private String schoolnameJianpin;
+
     //    @Field(type = FieldType.Date, format = DateFormat.year_month, index = FieldIndex.no)
     @Mapping(mappingPath = "mapping/time.json")
     private String starttime;
 
     private String description;
+
+    public String getSchoolnameQuanpin() {
+        return schoolnameQuanpin;
+    }
+
+    public void setSchoolnameQuanpin(String schoolnameQuanpin) {
+        this.schoolnameQuanpin = schoolnameQuanpin;
+    }
+
+    public String getSchoolnameJianpin() {
+        return schoolnameJianpin;
+    }
+
+    public void setSchoolnameJianpin(String schoolnameJianpin) {
+        this.schoolnameJianpin = schoolnameJianpin;
+    }
 
     public String getDegree() {
         return degree;

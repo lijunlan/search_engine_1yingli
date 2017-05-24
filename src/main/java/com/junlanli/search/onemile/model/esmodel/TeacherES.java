@@ -12,7 +12,7 @@ import java.util.List;
  *
  * @author: lijunlan888@gmail.com
  */
-@Document(indexName = "teacher", type = "test")
+@Document(indexName = "teacher", type = "teacher")
 @Setting(settingPath = "mapping/teacher.json")
 public class TeacherES {
 

@@ -42,14 +42,14 @@ public class NamePinyinUtil {
 
     public static String transferSimpleName(String chinese) {
         try {
-            String pinyin = PinyinHelper.toHanYuPinyinString(chinese, nameFormat, ",", false);
-            logger.info(String.format("whole word: %s, pinyin: %s", chinese, pinyin));
+
             StringBuilder sb = new StringBuilder();
-            String[] pinyins = pinyin.split(",");
-            for (String py : pinyins) {
+            for (char word : chinese.toCharArray()) {
+                String py = PinyinHelper.toHanYuPinyinString(new String(new char[]{word}), nameFormat, "", false);
                 if (py.length() == 0) continue;
                 sb.append(py.charAt(0));
             }
+//            logger.info(String.format("whole word: %s, simple pinyin: %s", chinese, sb.toString()));
             return sb.toString();
         } catch (BadHanyuPinyinOutputFormatCombination e) {
             logger.error("failed to transfer name to pinyin", e);

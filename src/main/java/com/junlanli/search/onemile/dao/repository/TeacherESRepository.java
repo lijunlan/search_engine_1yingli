@@ -19,45 +19,87 @@ public interface TeacherESRepository extends BaseESDao<TeacherES, Long> {
             "  \"bool\": {\n" +
             "    \"should\": [\n" +
             "      {\n" +
+            "        \"nested\": {\n" +
+            "          \"path\": \"workExperiences\",\n" +
+            "          \"score_mode\": \"max\",\n" +
+            "          \"query\": {\n" +
+            "            \"bool\": {\n" +
+            "              \"should\": [\n" +
+            "                {\n" +
+            "                  \"term\": {\n" +
+            "                    \"workExperiences.companyname\": \"?0\"\n" +
+            "                  }\n" +
+            "                },\n" +
+            "                {\n" +
+            "                  \"term\": {\n" +
+            "                    \"workExperiences.companynameQuanpin\": \"?0\"\n" +
+            "                  }\n" +
+            "                },\n" +
+            "                {\n" +
+            "                  \"term\": {\n" +
+            "                    \"workExperiences.companynameJianpin\": \"?0\"\n" +
+            "                  }\n" +
+            "                },\n" +
+            "                {\n" +
+            "                  \"term\": {\n" +
+            "                    \"workExperiences.position\": \"?0\"\n" +
+            "                  }\n" +
+            "                }\n" +
+            "              ]\n" +
+            "            }\n" +
+            "          }\n" +
+            "        }\n" +
+            "      },\n" +
+            "      {\n" +
+            "        \"nested\": {\n" +
+            "          \"path\": \"studyExperiences\",\n" +
+            "          \"score_mode\": \"max\",\n" +
+            "          \"query\": {\n" +
+            "            \"bool\": {\n" +
+            "              \"should\": [\n" +
+            "                {\n" +
+            "                  \"term\": {\n" +
+            "                    \"studyExperiences.schoolname\": \"?0\"\n" +
+            "                  }\n" +
+            "                },\n" +
+            "                {\n" +
+            "                  \"term\": {\n" +
+            "                    \"studyExperiences.schoolnameQuanpin\": \"?0\"\n" +
+            "                  }\n" +
+            "                },\n" +
+            "                {\n" +
+            "                  \"term\": {\n" +
+            "                    \"studyExperiences.schoolnameJianpin\": \"?0\"\n" +
+            "                  }\n" +
+            "                },\n" +
+            "                {\n" +
+            "                  \"term\": {\n" +
+            "                    \"studyExperiences.major\": \"?0\"\n" +
+            "                  }\n" +
+            "                }\n" +
+            "              ]\n" +
+            "            }\n" +
+            "          }\n" +
+            "        }\n" +
+            "      },\n" +
+            "      {\n" +
+            "        \"term\": {\n" +
+            "          \"nameQuanpin\": \"?0\"\n" +
+            "        }\n" +
+            "      },\n" +
+            "      {\n" +
             "        \"term\": {\n" +
             "          \"name\": \"?0\"\n" +
             "        }\n" +
             "      },\n" +
             "      {\n" +
             "        \"term\": {\n" +
-            "          \"nameQuanpin\" : \"?0\"\n" +
-            "        }\n" +
-            "      },\n" +
-            "      {\n" +
-            "        \"term\": {\n" +
-            "          \"nameJianpin\" : \"?0\"\n" +
+            "          \"nameJianpin\": \"?0\"\n" +
             "        }\n" +
             "      }\n" +
             "    ]\n" +
             "  }\n" +
             "}")
-    Page<TeacherES> findByNameOrNamePinyin(String input, Pageable pageable);
+    Page<TeacherES> findByNameOrNamePinyinOrSchoolNameOrCompanyName(String input, Pageable pageable);
 
-    @Query("{\n" +
-            "  \"bool\": {\n" +
-            "    \"should\": [\n" +
-            "      {\n" +
-            "        \"prefix\" : {\n" +
-            "          \"name\" : \"?0\"\n" +
-            "        }\n" +
-            "      },\n" +
-            "      {\n" +
-            "        \"prefix\" : {\n" +
-            "          \"nameQuanpin\" : \"?0\"\n" +
-            "        }\n" +
-            "      },\n" +
-            "      {\n" +
-            "        \"prefix\" : {\n" +
-            "          \"nameJianpin\" : \"?0\"\n" +
-            "        }\n" +
-            "      }\n" +
-            "    ]\n" +
-            "  }\n" +
-            "}")
-    Page<TeacherES> hintByNameOrNamePinyin(String input, Pageable pageable);
 }

@@ -127,12 +127,22 @@ public class TeacherWriteServiceImpl implements TeacherWriteService {
         List<StudyExperienceES> studyExperienceESList = new ArrayList<>(studyexperiences.size());
         for (Studyexperience studyexperience : studyexperiences) {
             StudyExperienceES studyExperienceES = JSON.toJavaObject((JSON) JSON.toJSON(studyexperience), StudyExperienceES.class);
+            String schoolname = studyExperienceES.getSchoolname();
+            String snpinyin = NamePinyinUtil.transferName(schoolname);
+            String snjianpin = NamePinyinUtil.transferSimpleName(schoolname);
+            studyExperienceES.setSchoolnameQuanpin(snpinyin);
+            studyExperienceES.setSchoolnameJianpin(snjianpin);
             studyExperienceESList.add(studyExperienceES);
         }
         List<Workexperience> workexperiences = teacherAll.getWorkexperiences();
         List<WorkExperienceES> workExperienceESList = new ArrayList<>(workexperiences.size());
         for (Workexperience workexperience : workexperiences) {
             WorkExperienceES workExperienceES = JSON.toJavaObject((JSON) JSON.toJSON(workexperience), WorkExperienceES.class);
+            String companyname = workExperienceES.getCompanyname();
+            String cnpinyin = NamePinyinUtil.transferName(companyname);
+            String cnjianpin = NamePinyinUtil.transferSimpleName(companyname);
+            workExperienceES.setCompanynameQuanpin(cnpinyin);
+            workExperienceES.setCompanynameJianpin(cnjianpin);
             workExperienceESList.add(workExperienceES);
         }
         teacherES.setStudyExperiences(studyExperienceESList);

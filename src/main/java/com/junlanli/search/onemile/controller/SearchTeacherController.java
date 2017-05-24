@@ -27,11 +27,6 @@ public class SearchTeacherController {
         this.teacherReadService = teacherReadService;
     }
 
-    @RequestMapping(value = "/name/hint", method = RequestMethod.GET)
-    public JSONObject hint(@RequestParam String input) {
-        return teacherReadService.hintByName(input);
-    }
-
     @RequestMapping(value = "/name", method = RequestMethod.GET)
     public JSONObject searchName(@RequestParam String input,
                                  @RequestParam Integer page,
