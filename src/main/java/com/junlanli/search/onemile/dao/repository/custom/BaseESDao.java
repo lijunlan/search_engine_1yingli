@@ -12,6 +12,8 @@ import java.util.List;
  * Copyright (C) 2015 - 2017 JUNLAN LI All Rights Reserved.
  * <p>
  * Created on 17/05/2017.
+ * <p>
+ * Custom base repository
  *
  * @author: lijunlan888@gmail.com
  */
